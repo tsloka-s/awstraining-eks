@@ -36,6 +36,7 @@ You should have following files:
 You can also create the files manually.
 
 ## Provision infrastructure (GitHub)
+
 First, you should fork this repository to your account.
 
 Then, you should go to **GitHub -> Your fork repo -> Settings -> Secrets and variables** and create two repository secrets:
@@ -43,6 +44,13 @@ Then, you should go to **GitHub -> Your fork repo -> Settings -> Secrets and var
 * BACKEND_EMEA_TEST_AWS_SECRET
 
 and set accordingly `ACCESS_KEY_ID` and `SECRET_ACCESS_KEY`, same as locally in `..\.aws\credentials`.
+
+
+Then, you should go to `wrapper.properties` and set `UNIQUE_BUCKET_STRING` to your custom, **unique** string, that will be added as a suffix to your state bucket name. You can edit the file directly in Github or clone it to yor local machine, change and push the changes back to Github.
+
+> **NOTE**  
+> It is important to come up with a unique value, as this will affect the name of the Terraform state bucket that will be created, thus it must be unique globally. Please also do not make it too long, e.g.: `daja819ad`
+
 
 Then, you should run **Provision with Terraform** pipeline under **Actions** tab. This will automatically provision AWS infrastructure. Choose **eks** as deployment type.
 
@@ -64,7 +72,7 @@ After executing this command, there will be new entry in your `C:\Users\YOURUSER
 
 ## Explore the EKS cluster
 
-Execute following command to display current context (current cluster you are working on). 
+Execute following command to display current context (current cluster you are working on). 
 ```
 kubectl config current-context
 ```
@@ -85,7 +93,7 @@ kubectl config use-context arn:aws:eks:eu-central-1:058264348876:cluster/backend
 
 ## Prepare the namespace
 
-Execute following command to list namespaces in a cluster. 
+Execute following command to list namespaces in a cluster. 
 ```
 kubectl get namespace
 ```
@@ -98,14 +106,14 @@ kube-system       Active   2d3h
 ```
 
 > **INFO** 
-> In Kubernetes, namespaces provides a mechanism for isolating groups of resources within a single cluster. Names of resources need to be unique within a namespace, but not across namespaces
+> In Kubernetes, namespaces provides a mechanism for isolating groups of resources within a single cluster. Names of resources need to be unique within a namespace, but not across namespaces
 
 * **default** - Kubernetes includes this namespace so that you can start using your new cluster without first creating a namespace.
-* **kube-node-lease** - This namespace holds [Lease](https://kubernetes.io/docs/concepts/architecture/leases/) objects associated with each node. Node leases allow the kubelet to send heartbeats so that the control plane can detect node failure.
-* **kube-public** - This namespace is readable by all clients (including those not authenticated). This namespace is mostly reserved for cluster usage, in case that some resources should be visible and readable publicly throughout the whole cluster. The public aspect of this namespace is only a convention, not a requirement.
+* **kube-node-lease** - This namespace holds [Lease](https://kubernetes.io/docs/concepts/architecture/leases/) objects associated with each node. Node leases allow the kubelet to send heartbeats so that the control plane can detect node failure.
+* **kube-public** - This namespace is readable by all clients (including those not authenticated). This namespace is mostly reserved for cluster usage, in case that some resources should be visible and readable publicly throughout the whole cluster. The public aspect of this namespace is only a convention, not a requirement.
 * **kube-system** - The namespace for objects created by the Kubernetes system
 
-Create new namespace where you will deploy your application. 
+Create new namespace where you will deploy your application. 
 ```
 kubectl create namespace applications
 ```
